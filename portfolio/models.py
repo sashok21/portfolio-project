@@ -2,61 +2,146 @@ from django.db import models
 
 
 class OwnerProfile(models.Model):
-    name = models.CharField("Ім'я та Прізвище", max_length=100, default="Я Влад")
-    role = models.CharField("Посада (хедер)", max_length=100, default="графічний дизайнер")
-    photo = models.ImageField("Фото профілю", upload_to="profile/")
-    about_text = models.TextField("Текст 'Про себе'")
+    """
+    Singleton model for storing the portfolio owner's personal details and theme settings.
+    """
+    name = models.CharField(
+        "Full Name",
+        max_length=100,
+        default="Vlad"
+    )
+    role = models.CharField(
+        "Role (Header)",
+        max_length=100,
+        default="Graphic Designer"
+    )
+    photo = models.ImageField(
+        "Profile Photo",
+        upload_to="profile/",
+        blank=True,
+        null=True
+    )
+    about_text = models.TextField(
+        "About Me Text",
+        default="Description about me..."
+    )
 
-    # Контакти
+    # General Contacts
     email = models.EmailField(blank=True)
     phone = models.CharField(max_length=20, blank=True)
-    behance = models.URLField(blank=True)
-    instagram = models.URLField(blank=True)
+
+    # Emoji Theme Settings (About Section)
+    emoji_main = models.CharField(
+        "Main Emoji (Big)",
+        max_length=10,
+        default="👋",
+        help_text="The large emoji in the center."
+    )
+    emoji_top_right = models.CharField(
+        "Deco Emoji 1 (Top Right)",
+        max_length=10,
+        default="👋",
+        help_text="Floating emoji top-right."
+    )
+    emoji_bottom_left = models.CharField(
+        "Deco Emoji 2 (Bottom Left)",
+        max_length=10,
+        default="💡",
+        help_text="Floating emoji bottom-left."
+    )
+    emoji_top_left = models.CharField(
+        "Deco Emoji 3 (Top Left)",
+        max_length=10,
+        default="⚡",
+        help_text="Floating emoji top-left."
+    )
 
     def __str__(self):
-        return "Налаштування Профілю (Редагувати це)"
+        return "Profile Settings"
 
     class Meta:
-        verbose_name = "Профіль власника"
-        verbose_name_plural = "Профіль власника"
+        verbose_name = "Owner Profile"
+        verbose_name_plural = "Owner Profiles"
 
 
-class Experience(models.Model):
-    company = models.CharField("Компанія", max_length=100)
-    position = models.CharField("Посада", max_length=100)
-    period = models.CharField("Період", max_length=50, help_text="Напр: Sep 2019 - July 2023")
-    description = models.TextField("Опис обов'язків", blank=True)
-    order = models.IntegerField("Порядок відображення", default=0)
+class SocialLink(models.Model):
+    """
+    Model for dynamic social media links displayed in the footer/contact section.
+    """
+    name = models.CharField(
+        "Network Name",
+        max_length=50,
+        help_text="e.g. Instagram, LinkedIn"
+    )
+    icon = models.FileField(
+        "Icon",
+        upload_to="socials/",
+        help_text="SVG or PNG format recommended"
+    )
+    link = models.URLField("URL")
+    order = models.IntegerField(
+        "Display Order",
+        default=0
+    )
 
     class Meta:
         ordering = ['order']
-        verbose_name = "Досвід роботи"
-        verbose_name_plural = "Досвід роботи"
+        verbose_name = "Social Link"
+        verbose_name_plural = "Social Links"
+
+    def __str__(self):
+        return self.name
+
+
+class Experience(models.Model):
+    """
+    Model representing work experience entries.
+    """
+    company = models.CharField("Company", max_length=100)
+    position = models.CharField("Position", max_length=100)
+    period = models.CharField(
+        "Period",
+        max_length=50,
+        help_text="e.g. Sep 2019 - July 2023"
+    )
+    description = models.TextField("Job Description", blank=True)
+    order = models.IntegerField("Display Order", default=0)
+
+    class Meta:
+        ordering = ['order']
+        verbose_name = "Experience"
+        verbose_name_plural = "Experiences"
 
     def __str__(self):
         return f"{self.company} - {self.position}"
 
 
 class Service(models.Model):
-    title = models.CharField("Назва послуги", max_length=100)
-    image = models.ImageField("Картинка картки", upload_to="services/")
-    link = models.URLField("Посилання (опціонально)", blank=True)
+    """
+    Model for services offered by the portfolio owner.
+    """
+    title = models.CharField("Service Title", max_length=100)
+    image = models.ImageField("Card Image", upload_to="services/")
+    link = models.URLField("Link (Optional)", blank=True)
 
     def __str__(self):
         return self.title
 
     class Meta:
-        verbose_name = "Послуга"
-        verbose_name_plural = "Послуги"
+        verbose_name = "Service"
+        verbose_name_plural = "Services"
 
 
 class Skill(models.Model):
-    name = models.CharField("Назва скіла", max_length=50)
-    icon = models.ImageField("Іконка", upload_to="skills/")
+    """
+    Model for technical or professional skills.
+    """
+    name = models.CharField("Skill Name", max_length=50)
+    icon = models.ImageField("Icon", upload_to="skills/")
 
     def __str__(self):
         return self.name
 
     class Meta:
-        verbose_name = "Навичка (Skill)"
-        verbose_name_plural = "Навички"
+        verbose_name = "Skill"
+        verbose_name_plural = "Skills"

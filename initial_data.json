@@ -1,0 +1,13 @@
+[
+{
+    "model": "portfolio.ownerprofile",
+    "pk": 1,
+    "fields": {
+        "name": "Влад",
+        "role": "Дизайн",
+        "about_text": "Вітаю! Це мій стартовий профіль.",
+        "email": "vlad@example.com",
+        "phone": "+380 00 000 0000"
+    }
+}
+]
