@@ -92,18 +92,31 @@
     };
 
     // ========================================
-    // Service Cards Hover Effect
+    // Service Cards Hover & Click Effect
     // ========================================
     const initServiceCards = () => {
         const serviceCards = document.querySelectorAll('.service-card');
 
         serviceCards.forEach(card => {
+            // Hover ефекти
             card.addEventListener('mouseenter', function() {
                 this.style.transform = 'translateY(-8px)';
             });
 
             card.addEventListener('mouseleave', function() {
                 this.style.transform = 'translateY(0)';
+            });
+
+            // Клік по всій картці (включаючи фото)
+            card.addEventListener('click', (e) => {
+                // Перевіряємо, чи клік не був по самій стрілці (щоб не було подвійного кліку)
+                if (!e.target.closest('.service-arrow')) {
+                    const link = card.querySelector('.service-arrow');
+                    // Якщо посилання існує і це не "#"
+                    if (link) {
+                        link.click();
+                    }
+                }
             });
         });
     };
@@ -117,7 +130,7 @@
         skillItems.forEach(skill => {
             skill.addEventListener('mouseenter', function() {
                 const skillName = this.getAttribute('data-skill');
-                console.log(`Skill hovered: ${skillName}`);
+                // Optional: add logic here
             });
         });
     };
@@ -149,21 +162,6 @@
         emojiDecorations.forEach((emoji, index) => {
             const delay = index * 0.3;
             emoji.style.animationDelay = `${delay}s`;
-        });
-    };
-
-    // ========================================
-    // Form Validation (if needed in future)
-    // ========================================
-    const initForms = () => {
-        const forms = document.querySelectorAll('form');
-
-        forms.forEach(form => {
-            form.addEventListener('submit', (e) => {
-                e.preventDefault();
-                // Add form validation logic here
-                console.log('Form submitted');
-            });
         });
     };
 
@@ -205,7 +203,7 @@
     };
 
     // ========================================
-    // Scroll to Top Button (Optional)
+    // Scroll to Top Button
     // ========================================
     const initScrollToTop = () => {
         const createScrollButton = () => {
@@ -213,6 +211,28 @@
             button.innerHTML = '↑';
             button.className = 'scroll-to-top';
             button.setAttribute('aria-label', 'Scroll to top');
+
+            // Стилі для кнопки
+            Object.assign(button.style, {
+                position: 'fixed',
+                bottom: '30px',
+                right: '30px',
+                width: '50px',
+                height: '50px',
+                borderRadius: '50%',
+                background: 'var(--cyan)',
+                color: 'var(--black)',
+                border: 'none',
+                cursor: 'pointer',
+                display: 'none',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: '24px',
+                zIndex: '999',
+                boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
+                transition: 'all 0.3s ease'
+            });
+
             document.body.appendChild(button);
 
             button.addEventListener('click', () => {
@@ -222,37 +242,30 @@
                 });
             });
 
+            button.addEventListener('mouseenter', () => {
+                button.style.transform = 'translateY(-5px)';
+            });
+
+            button.addEventListener('mouseleave', () => {
+                button.style.transform = 'translateY(0)';
+            });
+
             window.addEventListener('scroll', () => {
                 if (window.pageYOffset > 500) {
-                    button.classList.add('visible');
+                    button.style.display = 'flex';
                 } else {
-                    button.classList.remove('visible');
+                    button.style.display = 'none';
                 }
             });
         };
 
-        // Uncomment to enable scroll to top button
-        // createScrollButton();
-    };
-
-    // ========================================
-    // Performance Monitoring
-    // ========================================
-    const initPerformanceMonitoring = () => {
-        if ('performance' in window) {
-            window.addEventListener('load', () => {
-                const perfData = window.performance.timing;
-                const pageLoadTime = perfData.loadEventEnd - perfData.navigationStart;
-                console.log(`Page load time: ${pageLoadTime}ms`);
-            });
-        }
+        createScrollButton();
     };
 
     // ========================================
     // Accessibility Enhancements
     // ========================================
     const initAccessibility = () => {
-        // Add keyboard navigation support
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Tab') {
                 document.body.classList.add('keyboard-nav');
@@ -262,30 +275,6 @@
         document.addEventListener('mousedown', () => {
             document.body.classList.remove('keyboard-nav');
         });
-
-        // Add skip to content link
-        const skipLink = document.createElement('a');
-        skipLink.href = '#home';
-        skipLink.className = 'skip-link';
-        skipLink.textContent = 'Skip to content';
-        document.body.insertBefore(skipLink, document.body.firstChild);
-    };
-
-    // ========================================
-    // Responsive Navigation Toggle (Mobile)
-    // ========================================
-    const initMobileNav = () => {
-        const navPill = document.querySelector('.nav-pill');
-        const navLinks = document.querySelectorAll('.nav-link');
-
-        // Close nav on mobile when link is clicked
-        if (window.innerWidth < 768) {
-            navLinks.forEach(link => {
-                link.addEventListener('click', () => {
-                    // Add any mobile-specific behavior here
-                });
-            });
-        }
     };
 
     // ========================================
@@ -300,13 +289,10 @@
         initSkills();
         initParallax();
         initEmojiAnimations();
-        initForms();
         initLoadingAnimation();
         initLazyLoading();
         initScrollToTop();
-        initPerformanceMonitoring();
         initAccessibility();
-        initMobileNav();
     };
 
     // ========================================
@@ -317,13 +303,5 @@
     } else {
         init();
     }
-
-    // ========================================
-    // Expose API for external use
-    // ========================================
-    window.Portfolio = {
-        version: '1.0.0',
-        init: init
-    };
 
 })();
