@@ -153,7 +153,7 @@ UNFOLD = {
     "SITE_HEADER": "Панель управління",
     "SITE_URL": "/",
 }
-
+WHITENOISE_KEEP_ONLY_HASHED_FILES = False
 # Security settings для продакшену
 if not DEBUG:
     SECURE_SSL_REDIRECT = True
