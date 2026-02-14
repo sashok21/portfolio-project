@@ -10,4 +10,4 @@ python manage.py collectstatic --no-input --clear
 python manage.py migrate
 
 # Create superuser if it doesn't exist (requires ADMIN_PASSWORD env var)
-python createsu.py
+python manage.py createsu
